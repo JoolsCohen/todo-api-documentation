@@ -1,0 +1,199 @@
+openapi: 3.0.3
+info:
+  title: Simple Todo List API
+  description: |
+    Это простое API для управления списком задач (To-Do List).
+    Учебный проект для портфолио технического писателя.
+  contact:
+    name: Юлия Минглиева
+    url: https://github.com/JoolsCohen
+    email: joolescohen@gmail.com
+  version: 1.0.0
+servers:
+- url: https://api.example-todo.com/v1
+  description: Production server
+tags:
+- name: Tasks
+  description: Everything about your tasks
+paths:
+  /tasks:
+    get:
+      tags:
+      - Tasks
+      summary: Get all tasks
+      description: Возвращает список всех задач в системе.
+      responses:
+        "200":
+          description: Успешный запрос. Возвращает массив задач.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags:
+      - Tasks
+      summary: Create a new task
+      description: Создает новую задачу в списке.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskInput"
+        required: true
+      responses:
+        "201":
+          description: Задача успешно создана.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "400":
+          description: Неверные входные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /tasks/{id}:
+    get:
+      tags:
+      - Tasks
+      summary: Get a task by ID
+      description: Возвращает одну задачу по её уникальному идентификатору.
+      parameters:
+      - name: id
+        in: path
+        description: ID задачи
+        required: true
+        schema:
+          type: integer
+          format: int64
+          example: 1
+      responses:
+        "200":
+          description: Успешный запрос. Возвращает задачу.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          description: Задача с указанным ID не найдена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+      - Tasks
+      summary: Update a task
+      description: Обновляет данные существующей задачи.
+      parameters:
+      - name: id
+        in: path
+        description: ID обновляемой задачи
+        required: true
+        schema:
+          type: integer
+          format: int64
+          example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskInput"
+        required: true
+      responses:
+        "200":
+          description: Задача успешно обновлена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          description: Задача с указанным ID не найдена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+      - Tasks
+      summary: Delete a task
+      description: Удаляет задачу из системы.
+      parameters:
+      - name: id
+        in: path
+        description: ID удаляемой задачи
+        required: true
+        schema:
+          type: integer
+          format: int64
+          example: 1
+      responses:
+        "204":
+          description: Задача успешно удалена. Тело ответа отсутствует.
+        "404":
+          description: Задача с указанным ID не найдена.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+          example: 1
+        title:
+          type: string
+          example: Купить молоко
+        description:
+          type: string
+          example: "Обезжиренное, 1 литр"
+        completed:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+          example: 2025-08-25T10:30:00Z
+    TaskInput:
+      required:
+      - title
+      type: object
+      properties:
+        title:
+          type: string
+          example: Выучить OpenAPI
+        description:
+          type: string
+          example: Прочитать документацию и сделать учебный проект
+        completed:
+          type: boolean
+          example: false
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: "#/components/schemas/Error_error"
+    Error_error:
+      type: object
+      properties:
+        code:
+          type: string
+          example: not_found
+        message:
+          type: string
+          example: Task with id '123' was not found.
