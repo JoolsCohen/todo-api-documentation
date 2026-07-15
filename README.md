@@ -12,7 +12,6 @@
 
 Спецификация API написана в формате OpenAPI 3.0.
 - **[Просмотреть документацию в Swagger UI](https://editor.swagger.io/?url=https://raw.githubusercontent.com/ВАШ_ЛОГИН_GITHUB/НАЗВАНИЕ_РЕПОЗИТОРИЯ/main/openapi.yaml)**
-  (ссылка заработает после загрузки файла в GitHub)
 
 ## Быстрый старт
 
